@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimalist Habit Tracker</title>
+  <link rel="stylesheet" href="ninja.css" />
+  <!-- Font Awesome Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <div class="app-container" id="app-container">
+    <!-- Header Section -->
+    <header class="app-header">
+      <div class="title-area">
+        <h1>Habit Tracker</h1>
+        <p id="current-date" class="date-subtitle"></p>
+      </div>
+      <button id="open-add-modal-btn" class="primary-btn" aria-label="Add Habit">
+        <i class="fa-solid fa-plus"></i> Add Habit
+      </button>
+    </header>
+
+    <!-- Overall Statistics Summary -->
+    <section class="stats-card">
+      <div class="stats-info">
+        <div class="stats-header">
+          <h2 id="stats-time-label">Current Week Completion</h2>
+          <!-- Three-dot menu for viewing past performance -->
+          <div class="dropdown">
+            <button id="timeframe-menu-btn" class="icon-menu-btn" title="Filter performance timeframe" aria-expanded="false">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <div id="timeframe-dropdown" class="dropdown-menu hidden">
+              <button class="dropdown-item active" data-range="current_week">Current Week</button>
+              <button class="dropdown-item" data-range="prev_week">Previous Week</button>
+              <button class="dropdown-item" data-range="last_2_weeks">Last 2 Weeks</button>
+              <button class="dropdown-item" data-range="last_month">Last Month (30 Days)</button>
+              <button class="dropdown-item" data-range="prev_month">Previous Month</button>
+              <button class="dropdown-item" data-range="third_month">3rd Month Ago</button>
+            </div>
+          </div>
+        </div>
+        <p class="stats-subtext" id="stats-subtext">Week 1 started on your first day of use</p>
+      </div>
+      <div class="stats-visual">
+        <div class="progress-ring-container">
+          <svg class="progress-ring" width="80" height="80">
+            <circle class="progress-ring__circle-bg" stroke="#e2e8f0" stroke-width="8" fill="transparent" r="32" cx="40" cy="40"/>
+            <circle id="overall-progress-circle" class="progress-ring__circle" stroke="#6366f1" stroke-width="8" fill="transparent" r="32" cx="40" cy="40"/>
+          </svg>
+          <span id="overall-percentage" class="progress-text">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Days Bar (Current week view by default) -->
+    <section class="days-bar-container">
+      <div class="days-bar" id="days-bar">
+        <!-- Dynamic weekly header inserted here -->
+      </div>
+    </section>
+
+    <!-- Habits List Section -->
+    <main class="habits-container" id="habits-list">
+      <!-- Habit Cards rendered here -->
+    </main>
+
+    <!-- Empty State View -->
+    <div id="empty-state" class="empty-state hidden">
+      <i class="fa-regular fa-calendar-check empty-icon"></i>
+      <h3>No habits added yet</h3>
+      <p>Start building good habits today! Click below to create your first habit.</p>
+      <button class="secondary-btn" id="empty-add-btn">
+        <i class="fa-solid fa-plus"></i> Create Habit
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal for Adding / Editing Habits -->
+  <div id="habit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">New Habit</h3>
+        <button id="close-modal-btn" class="close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="habit-form">
+        <input type="hidden" id="habit-id" />
+        
+        <div class="form-group">
+          <label for="habit-name">Habit Name</label>
+          <input
+            type="text"
+            id="habit-name"
+            placeholder="e.g., Read 20 pages, Drink Water..."
+            required
+            maxlength="30"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Choose Emoji</label>
+          <div class="emoji-picker" id="emoji-picker">
+            <button type="button" class="emoji-option selected" data-emoji="⚡">⚡</button>
+            <button type="button" class="emoji-option" data-emoji="💧">💧</button>
+            <button type="button" class="emoji-option" data-emoji="📚">📚</button>
+            <button type="button" class="emoji-option" data-emoji="🏃">🏃</button>
+            <button type="button" class="emoji-option" data-emoji="🧘">🧘</button>
+            <button type="button" class="emoji-option" data-emoji="🥗">🥗</button>
+            <button type="button" class="emoji-option" data-emoji="🎨">🎨</button>
+            <button type="button" class="emoji-option" data-emoji="💻">💻</button>
+            <button type="button" class="emoji-option" data-emoji="🛌">🛌</button>
+            <button type="button" class="emoji-option" data-emoji="🍎">🍎</button>
+            <button type="button" class="emoji-option" data-emoji="💪">💪</button>
+            <button type="button" class="emoji-option" data-emoji="🚴">🚴</button>
+            <button type="button" class="emoji-option" data-emoji="🚶">🚶</button>
+            <button type="button" class="emoji-option" data-emoji="🎯">🎯</button>
+            <button type="button" class="emoji-option" data-emoji="🧠">🧠</button>
+            <button type="button" class="emoji-option" data-emoji="✍️">✍️</button>
+            <button type="button" class="emoji-option" data-emoji="🎵">🎵</button>
+            <button type="button" class="emoji-option" data-emoji="☕">☕</button>
+            <button type="button" class="emoji-option" data-emoji="💊">💊</button>
+            <button type="button" class="emoji-option" data-emoji="🧹">🧹</button>
+            <button type="button" class="emoji-option" data-emoji="🌱">🌱</button>
+            <button type="button" class="emoji-option" data-emoji="💰">💰</button>
+            <button type="button" class="emoji-option" data-emoji="☀️">☀️</button>
+            <button type="button" class="emoji-option" data-emoji="🌙">🌙</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Choose Color</label>
+          <div class="color-picker" id="color-picker">
+            <button type="button" class="color-option selected" data-color="#6366f1" style="background-color: #6366f1;" aria-label="Indigo"></button>
+            <button type="button" class="color-option" data-color="#3b82f6" style="background-color: #3b82f6;" aria-label="Blue"></button>
+            <button type="button" class="color-option" data-color="#06b6d4" style="background-color: #06b6d4;" aria-label="Cyan"></button>
+            <button type="button" class="color-option" data-color="#10b981" style="background-color: #10b981;" aria-label="Emerald"></button>
+            <button type="button" class="color-option" data-color="#84cc16" style="background-color: #84cc16;" aria-label="Lime"></button>
+            <button type="button" class="color-option" data-color="#f59e0b" style="background-color: #f59e0b;" aria-label="Amber"></button>
+            <button type="button" class="color-option" data-color="#f97316" style="background-color: #f97316;" aria-label="Orange"></button>
+            <button type="button" class="color-option" data-color="#ef4444" style="background-color: #ef4444;" aria-label="Red"></button>
+            <button type="button" class="color-option" data-color="#ec4899" style="background-color: #ec4899;" aria-label="Pink"></button>
+            <button type="button" class="color-option" data-color="#d946ef" style="background-color: #d946ef;" aria-label="Fuchsia"></button>
+            <button type="button" class="color-option" data-color="#8b5cf6" style="background-color: #8b5cf6;" aria-label="Violet"></button>
+            <button type="button" class="color-option" data-color="#a855f7" style="background-color: #a855f7;" aria-label="Purple"></button>
+            <button type="button" class="color-option" data-color="#14b8a6" style="background-color: #14b8a6;" aria-label="Teal"></button>
+            <button type="button" class="color-option" data-color="#22c55e" style="background-color: #22c55e;" aria-label="Green"></button>
+            <button type="button" class="color-option" data-color="#eab308" style="background-color: #eab308;" aria-label="Yellow"></button>
+            <button type="button" class="color-option" data-color="#64748b" style="background-color: #64748b;" aria-label="Slate"></button>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancel-modal-btn" class="cancel-btn">Cancel</button>
+          <button type="submit" class="submit-btn">Save Habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="ninja.js"></script>
+</body>
+</html>
